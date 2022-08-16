@@ -113,8 +113,8 @@ class _EmailSignInState extends State<PhoneSignIn> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => VerificationScreen(
-                    phoneNumber: PhoneController.text.toString()),
+                builder: (context) =>
+                    VerificationScreen(phoneNumber: PhoneController.text),
               ));
         }
       },

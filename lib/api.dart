@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import 'package:practice_firebase_testing/userModel.dart';
 
 String _verificationId = '';
-AppUser? user;
-String? uid;
+
 String otpInput = '';
 
 class API {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  AppUser? user, _loggedInUser;
 //SendOtp
   void sendOTP(String phoneNumber) async {
     await _auth.verifyPhoneNumber(
@@ -51,37 +53,45 @@ class API {
 //  Verify Otp
   Future<AppUser?> verifyOTP(String otp) async {
     otpInput = otp;
+    AppUser? user;
+    UserCredential userCredential;
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: _verificationId, smsCode: otp);
-    try {
-      await _auth
-          .signInWithCredential(credential)
-          .then((value) => uid = value.user?.uid);
+    // try {
+    userCredential =
+        await _auth.signInWithCredential(credential).then((uid) => uid);
 
-      CollectionReference usercollection =
-          FirebaseFirestore.instance.collection('users');
+    CollectionReference usercollection =
+        FirebaseFirestore.instance.collection('users');
 
-      final userData = usercollection
-          .where("uid", isEqualTo: uid = uid.toString())
-          .get()
-          .then(
-        (querySnapshot) {
-          final userData =
-              querySnapshot.docs.first.data() as Map<String, dynamic>;
-          user = AppUser.fromMap(userData);
-          // _loggedInUser = user;
-          return user;
-        },
-      );
-      uid;
-    } catch (e) {
-      print('..........verify $e................');
-    }
+    final db = usercollection
+        .where("uid", isEqualTo: userCredential.user?.uid)
+        .get()
+        .then(
+      (querySnapshot) {
+        final userData =
+            querySnapshot.docs.first.data() as Map<String, dynamic>;
+        user = AppUser.fromMap(userData);
+        // _loggedInUser = user;
+        return user;
+      },
+    );
     return user;
-  }
 
-  AppUser? userdetails() {
-    return user;
+    //return uid.user?.uid;
+    // }
+    // on FirebaseAuthException catch (e) {
+    //   if (e.code == 'user-not-found') {
+    //     //print('No user found for that email.');
+    //     const Text('data');
+    //   } else if (e.code == 'wrong-password') {
+    //     //print('Wrong password provided for that user.');
+    //     return null;
+    // }
+    // } on Exception catch (e) {
+    //   print(e.toString());
+    // }
+    // return null;
   }
 
 // LogOut
@@ -92,9 +102,11 @@ class API {
   // SignUp
   signUp(AppUser _appUser) async {
     try {
+      final userdata = FirebaseAuth.instance.currentUser;
+      final uid = userdata?.uid.toString();
       FirebaseFirestore.instance.collection('users').doc(_appUser.userId).set(
         {
-          'uid': uid.toString(),
+          'uid': uid,
           'userId': _appUser.userId,
           'name': _appUser.name,
           'email': _appUser.email,
@@ -115,9 +127,20 @@ class API {
     return UserCredential;
   }
 
-  // Authstate changes keep loggedIn
-  Stream<User?>? authstateChanges() {
-    Stream<User?> authState = FirebaseAuth.instance.authStateChanges();
-    return authState;
+  // get user
+  Future getAppUserFromUid(String uid) async {
+    String? _loggedInUser;
+
+    CollectionReference db = FirebaseFirestore.instance.collection('users');
+    final user = db.where("uid", isEqualTo: uid).get().then(
+      (DocumentSnapshot) {
+        final userData =
+            DocumentSnapshot.docs.first.data() as Map<String, dynamic>;
+        final user = AppUser.fromMap(userData).name.toString();
+        _loggedInUser = user;
+        return _loggedInUser;
+      },
+    );
+    // return _loggedInUser.toString();
   }
 }

@@ -6,7 +6,7 @@ import 'package:practice_firebase_testing/userModel.dart';
 import 'package:uuid/uuid.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({Key? key, this.phoneNumber}) : super(key: key);
+  const SignupPage({Key? key, required this.phoneNumber}) : super(key: key);
   final String? phoneNumber;
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -106,7 +106,7 @@ class _SignupPageState extends State<SignupPage> {
                     return null;
                   },
                   onSaved: (value) {
-                    phonenumbercontroller.text = value!;
+                    value = phonenumbercontroller.text;
                   },
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,

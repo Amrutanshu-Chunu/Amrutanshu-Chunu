@@ -8,7 +8,7 @@ class AuthInitial extends AuthState {}
 class SendOTPState extends AuthState {}
 
 class VerifyOTPState extends AuthState {
-  Future<AppUser?>? user;
+  AppUser? user;
   VerifyOTPState({
     this.user,
   });

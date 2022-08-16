@@ -1,0 +1,6 @@
+{
+    "cmake.sourceDirectory": "${workspaceFolder}/linux",
+    "bloc.checkForUpdates": false,
+    "bloc.newBlocTemplate.type": "equatable",
+    "bloc.newCubitTemplate.type": "equatable"
+}

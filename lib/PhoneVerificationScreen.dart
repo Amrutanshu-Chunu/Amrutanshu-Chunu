@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:practice_firebase_testing/api.dart';
@@ -19,6 +23,7 @@ class VerificationScreen extends StatefulWidget {
 class _EmailSignInState extends State<VerificationScreen> {
 // firebase implementation
   AppUser? user;
+
   final _formkey = GlobalKey<FormState>();
   final TextEditingController OtpController = TextEditingController();
 
@@ -107,24 +112,23 @@ class _EmailSignInState extends State<VerificationScreen> {
       },
       listener: (context, state) {
         if (state is VerifyOTPState) {
-          // AppUser? userdata = API().userdetails();
-          // if (userdata == null) {
-          //   Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) =>
-          //             SignupPage(phoneNumber: widget.phoneNumber.toString()),
-          //       ));
-          // } else {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreen(),
-              ));
+          // final db = FirebaseAuth.instance.currentUser;
+          // String? uid = db?.uid;
+          if (state.user != null) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeScreen(),
+                ));
+          } else {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      SignupPage(phoneNumber: widget.phoneNumber),
+                ));
+          }
         }
-        // } else {
-        //   const CircularProgressIndicator();
-        // }
       },
     );
   }
