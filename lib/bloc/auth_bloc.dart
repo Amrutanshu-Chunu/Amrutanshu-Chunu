@@ -19,6 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         {API().sendOTP(event.phoneNumber), emit(SendOTPState())});
     on<VerifyOTPEvent>((event, emit) async => {
           userss = await API().verifyOTP(event.otp),
+          print('...........BLOC........$userss'),
           emit(VerifyOTPState(user: userss))
         });
     on<LogoutEvent>((event, emit) => {API().logOut(), emit(LogoutState())});

@@ -114,7 +114,8 @@ class _EmailSignInState extends State<VerificationScreen> {
         if (state is VerifyOTPState) {
           // final db = FirebaseAuth.instance.currentUser;
           // String? uid = db?.uid;
-          if (state.user != null) {
+          if (state.user?.name.toString() != null) {
+            print('...VERIFICATION SCREEN....${state.user}............');
             Navigator.push(
                 context,
                 MaterialPageRoute(

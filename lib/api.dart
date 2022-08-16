@@ -43,7 +43,7 @@ class API {
           print('...................verifii$e..............');
         }
       },
-      timeout: const Duration(seconds: 60),
+      timeout: const Duration(seconds: 5),
       codeAutoRetrievalTimeout: (String verificationId) {
         // Auto-resolution timed out...
       },
@@ -68,30 +68,17 @@ class API {
         .where("uid", isEqualTo: userCredential.user?.uid)
         .get()
         .then(
-      (querySnapshot) {
+      (querySnapshot) async {
         final userData =
-            querySnapshot.docs.first.data() as Map<String, dynamic>;
+            await querySnapshot.docs.first.data() as Map<String, dynamic>;
         user = AppUser.fromMap(userData);
-        // _loggedInUser = user;
+        _loggedInUser = user;
+        print('........API..........$user');
         return user;
       },
     );
     return user;
-
-    //return uid.user?.uid;
-    // }
-    // on FirebaseAuthException catch (e) {
-    //   if (e.code == 'user-not-found') {
-    //     //print('No user found for that email.');
-    //     const Text('data');
-    //   } else if (e.code == 'wrong-password') {
-    //     //print('Wrong password provided for that user.');
-    //     return null;
-    // }
-    // } on Exception catch (e) {
-    //   print(e.toString());
-    // }
-    // return null;
+    print('?????$user');
   }
 
 // LogOut
